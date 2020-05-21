@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Search from "./components/search/Search";
-import Image from "./components/Image/Image";
+// import Image from "./components/Image/Image";
 import Navbar from "./components/Navigation/Navbar";
 import Photos from "./components/Photos/Photos";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  Redirect,
+  BrowserRouter as Router,
+  Route,
+  Switch,
+} from "react-router-dom";
 
 import Axios from "axios";
 
@@ -50,6 +55,10 @@ function App() {
       setError("Your search did not return any results. Please try again.");
     } else {
       setImages(response.data.photos.photo);
+      console.log("object");
+      let url = `\\${text}`;
+      console.log(url);
+      return <Redirect to='\' />;
     }
   };
   return (
@@ -57,22 +66,9 @@ function App() {
       <div className='App'>
         <Search searchImages={searchImages} />
         <Navbar />
-        <h2>Results</h2>
-        {
-          <div className='photo-container'>
-            <ul>
-              {images.map((image) => {
-                let src = `https://farm${image.farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}.jpg`;
-                return (
-                  <li key={image.id}>
-                    <Image src={src} />
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        }
-        <h2>{error}</h2>
+        {/* <h2>Results</h2> */}
+
+        {/* <h2>{error}</h2> */}
         <Switch>
           <Route
             exact
@@ -89,6 +85,7 @@ function App() {
             path='/computers'
             component={() => <Photos images={computerImages} />}
           />
+          <Route exact path='/*' component={() => <Photos images={images} />} />
         </Switch>
       </div>
     </Router>

@@ -76,7 +76,7 @@ input {
 
 .photo-container ul li {
   width: 220px;
-  height: 165px;
+  height: 150px;
   overflow: hidden;
   margin-bottom: 15px;
 }
@@ -95,6 +95,10 @@ input {
   width: 100%;
   transform: scale(1.25);
   transition: transform 1.25s;
+}
+
+img {
+  height: 150px !important;
 }
 
 .photo-container li:hover img {

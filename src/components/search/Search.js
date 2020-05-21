@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "../../styles/index.css";
+import { withRouter } from "react-router-dom";
 
-const Search = ({ searchImages }) => {
+const Search = ({ searchImages, history }) => {
   const [text, setText] = useState("");
 
   const textChangeHandler = (e) => {
@@ -12,6 +13,7 @@ const Search = ({ searchImages }) => {
     e.preventDefault();
     if (text !== "") {
       searchImages(text);
+      history.push(`/${text}`);
     } else {
       alert("Search can't be empty!");
     }
@@ -43,4 +45,4 @@ const Search = ({ searchImages }) => {
   );
 };
 
-export default Search;
+export default withRouter(Search);
