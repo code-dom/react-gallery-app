@@ -1,25 +1,97 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Search from "./components/search/Search";
+import Image from "./components/Image/Image";
+import Navbar from "./components/Navigation/Navbar";
+import Photos from "./components/Photos/Photos";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+
+import Axios from "axios";
+
+import "./App.css";
+import "./styles/index.css";
 
 function App() {
+  const [images, setImages] = useState([]);
+  const [dogImages, setDogImages] = useState([]);
+  const [catImages, setCatImages] = useState([]);
+  const [computerImages, setComputerImages] = useState([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const dogsData = async () => {
+      const dogsResponse = await Axios.get(
+        `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=7647f34d79e87829dc724d526fc6d73a&tags=dogst&per_page=24&format=json&nojsoncallback=1`
+      );
+      setDogImages(dogsResponse.data.photos.photo);
+    };
+    const catsData = async () => {
+      const catsResponse = await Axios.get(
+        `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=7647f34d79e87829dc724d526fc6d73a&tags=cats&per_page=24&format=json&nojsoncallback=1`
+      );
+      setCatImages(catsResponse.data.photos.photo);
+    };
+    const computersData = async () => {
+      const computersResponse = await Axios.get(
+        `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=7647f34d79e87829dc724d526fc6d73a&tags=computers&per_page=24&format=json&nojsoncallback=1`
+      );
+      setComputerImages(computersResponse.data.photos.photo);
+    };
+
+    dogsData();
+    catsData();
+    computersData();
+  }, []);
+
+  const searchImages = async (text) => {
+    const response = await Axios.get(
+      `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=7647f34d79e87829dc724d526fc6d73a&tags=${text}t&per_page=24&format=json&nojsoncallback=1`
+    );
+    if (response === null) {
+      setError("Your search did not return any results. Please try again.");
+    } else {
+      setImages(response.data.photos.photo);
+    }
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className='App'>
+        <Search searchImages={searchImages} />
+        <Navbar />
+        <h2>Results</h2>
+        {
+          <div className='photo-container'>
+            <ul>
+              {images.map((image) => {
+                let src = `https://farm${image.farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}.jpg`;
+                return (
+                  <li key={image.id}>
+                    <Image src={src} />
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        }
+        <h2>{error}</h2>
+        <Switch>
+          <Route
+            exact
+            path='/dogs'
+            component={() => <Photos images={dogImages} />}
+          />
+          <Route
+            exact
+            path='/cats'
+            component={() => <Photos images={catImages} />}
+          />
+          <Route
+            exact
+            path='/computers'
+            component={() => <Photos images={computerImages} />}
+          />
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
