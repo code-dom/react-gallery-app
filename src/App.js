@@ -56,6 +56,7 @@ function App() {
     );
     console.log(response.data.photos.photo);
     if (response.data.photos.photo.length === 0) {
+      setImages([]);
       setStatement("No Results Found");
     } else {
       setStatement("Results");
