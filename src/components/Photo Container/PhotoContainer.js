@@ -1,4 +1,5 @@
 import React from "react";
+import Photo from "./Photo/Photo";
 import "../../styles/index.css";
 
 const Photos = ({ images, statement }) => {
@@ -9,11 +10,7 @@ const Photos = ({ images, statement }) => {
         <ul>
           {images.map((image) => {
             let src = `https://farm${image.farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}.jpg`;
-            return (
-              <li key={image.id}>
-                <img src={src} alt='' />
-              </li>
-            );
+            return <Photo key={image.id} src={src} />;
           })}
         </ul>
       </div>

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Search from "./components/search/Search";
-// import Image from "./components/Image/Image";
-import Navbar from "./components/Navigation/Navbar";
-import Photos from "./components/Photos/Photos";
+import Navbar from "./components/Nav/Navbar";
+import PhotoContainer from "./components/Photo Container/PhotoContainer";
 import apiKey from "./config";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
@@ -50,11 +49,9 @@ function App() {
   }, []);
 
   const searchImages = async (text) => {
-    console.log(apiKey);
     const response = await Axios.get(
       `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${text}t&per_page=24&format=json&nojsoncallback=1`
     );
-    console.log(response.data.photos.photo);
     if (response.data.photos.photo.length === 0) {
       setImages([]);
       setStatement("No Results Found");
@@ -72,24 +69,30 @@ function App() {
           <Route
             exact
             path='/dogs'
-            component={() => <Photos images={dogImages} statement='Results' />}
+            component={() => (
+              <PhotoContainer images={dogImages} statement='Results' />
+            )}
           />
           <Route
             exact
             path='/cats'
-            component={() => <Photos images={catImages} statement='Results' />}
+            component={() => (
+              <PhotoContainer images={catImages} statement='Results' />
+            )}
           />
           <Route
             exact
             path='/computers'
             component={() => (
-              <Photos images={computerImages} statement='Results' />
+              <PhotoContainer images={computerImages} statement='Results' />
             )}
           />
           <Route
             exact
             path='/*'
-            component={() => <Photos images={images} statement={statement} />}
+            component={() => (
+              <PhotoContainer images={images} statement={statement} />
+            )}
           />
         </Switch>
       </div>
