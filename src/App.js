@@ -3,6 +3,7 @@ import Search from "./components/search/Search";
 // import Image from "./components/Image/Image";
 import Navbar from "./components/Navigation/Navbar";
 import Photos from "./components/Photos/Photos";
+import apiKey from "../config";
 import {
   Redirect,
   BrowserRouter as Router,
@@ -20,24 +21,23 @@ function App() {
   const [dogImages, setDogImages] = useState([]);
   const [catImages, setCatImages] = useState([]);
   const [computerImages, setComputerImages] = useState([]);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     const dogsData = async () => {
       const dogsResponse = await Axios.get(
-        `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=7647f34d79e87829dc724d526fc6d73a&tags=dogst&per_page=24&format=json&nojsoncallback=1`
+        `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=dogst&per_page=24&format=json&nojsoncallback=1`
       );
       setDogImages(dogsResponse.data.photos.photo);
     };
     const catsData = async () => {
       const catsResponse = await Axios.get(
-        `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=7647f34d79e87829dc724d526fc6d73a&tags=cats&per_page=24&format=json&nojsoncallback=1`
+        `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=cats&per_page=24&format=json&nojsoncallback=1`
       );
       setCatImages(catsResponse.data.photos.photo);
     };
     const computersData = async () => {
       const computersResponse = await Axios.get(
-        `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=7647f34d79e87829dc724d526fc6d73a&tags=computers&per_page=24&format=json&nojsoncallback=1`
+        `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=computers&per_page=24&format=json&nojsoncallback=1`
       );
       setComputerImages(computersResponse.data.photos.photo);
     };
@@ -49,16 +49,9 @@ function App() {
 
   const searchImages = async (text) => {
     const response = await Axios.get(
-      `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=7647f34d79e87829dc724d526fc6d73a&tags=${text}t&per_page=24&format=json&nojsoncallback=1`
+      `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${text}t&per_page=24&format=json&nojsoncallback=1`
     );
-    if (response === null) {
-      setError("Your search did not return any results. Please try again.");
-    } else {
       setImages(response.data.photos.photo);
-      console.log("object");
-      let url = `\\${text}`;
-      console.log(url);
-      return <Redirect to='\' />;
     }
   };
   return (
@@ -66,9 +59,7 @@ function App() {
       <div className='App'>
         <Search searchImages={searchImages} />
         <Navbar />
-        {/* <h2>Results</h2> */}
-
-        {/* <h2>{error}</h2> */}
+        
         <Switch>
           <Route
             exact
