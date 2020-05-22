@@ -3,7 +3,7 @@ import Search from "./components/search/Search";
 // import Image from "./components/Image/Image";
 import Navbar from "./components/Navigation/Navbar";
 import Photos from "./components/Photos/Photos";
-import apiKey from "../config";
+import apiKey from "./config";
 import {
   Redirect,
   BrowserRouter as Router,
@@ -21,6 +21,7 @@ function App() {
   const [dogImages, setDogImages] = useState([]);
   const [catImages, setCatImages] = useState([]);
   const [computerImages, setComputerImages] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const dogsData = async () => {
@@ -48,10 +49,18 @@ function App() {
   }, []);
 
   const searchImages = async (text) => {
+    console.log(apiKey);
     const response = await Axios.get(
       `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${text}t&per_page=24&format=json&nojsoncallback=1`
     );
+    if (response === null) {
+      setError("Your search did not return any results. Please try again.");
+    } else {
       setImages(response.data.photos.photo);
+      console.log("object");
+      let url = `\\${text}`;
+      console.log(url);
+      return <Redirect to='\' />;
     }
   };
   return (
@@ -59,7 +68,6 @@ function App() {
       <div className='App'>
         <Search searchImages={searchImages} />
         <Navbar />
-        
         <Switch>
           <Route
             exact
