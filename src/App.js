@@ -4,12 +4,7 @@ import Search from "./components/search/Search";
 import Navbar from "./components/Navigation/Navbar";
 import Photos from "./components/Photos/Photos";
 import apiKey from "./config";
-import {
-  Redirect,
-  BrowserRouter as Router,
-  Route,
-  Switch,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import Axios from "axios";
 
@@ -21,25 +16,31 @@ function App() {
   const [dogImages, setDogImages] = useState([]);
   const [catImages, setCatImages] = useState([]);
   const [computerImages, setComputerImages] = useState([]);
-  const [error, setError] = useState("");
+  const [statement, setStatement] = useState("Results");
 
   useEffect(() => {
     const dogsData = async () => {
       const dogsResponse = await Axios.get(
         `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=dogst&per_page=24&format=json&nojsoncallback=1`
       );
+      setStatement("Results");
+
       setDogImages(dogsResponse.data.photos.photo);
     };
     const catsData = async () => {
       const catsResponse = await Axios.get(
         `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=cats&per_page=24&format=json&nojsoncallback=1`
       );
+      setStatement("Results");
+
       setCatImages(catsResponse.data.photos.photo);
     };
     const computersData = async () => {
       const computersResponse = await Axios.get(
         `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=computers&per_page=24&format=json&nojsoncallback=1`
       );
+      setStatement("Results");
+
       setComputerImages(computersResponse.data.photos.photo);
     };
 
@@ -53,14 +54,12 @@ function App() {
     const response = await Axios.get(
       `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${text}t&per_page=24&format=json&nojsoncallback=1`
     );
-    if (response === null) {
-      setError("Your search did not return any results. Please try again.");
+    console.log(response.data.photos.photo);
+    if (response.data.photos.photo.length === 0) {
+      setStatement("No Results Found");
     } else {
+      setStatement("Results");
       setImages(response.data.photos.photo);
-      console.log("object");
-      let url = `\\${text}`;
-      console.log(url);
-      return <Redirect to='\' />;
     }
   };
   return (
@@ -72,19 +71,25 @@ function App() {
           <Route
             exact
             path='/dogs'
-            component={() => <Photos images={dogImages} />}
+            component={() => <Photos images={dogImages} statement='Results' />}
           />
           <Route
             exact
             path='/cats'
-            component={() => <Photos images={catImages} />}
+            component={() => <Photos images={catImages} statement='Results' />}
           />
           <Route
             exact
             path='/computers'
-            component={() => <Photos images={computerImages} />}
+            component={() => (
+              <Photos images={computerImages} statement='Results' />
+            )}
           />
-          <Route exact path='/*' component={() => <Photos images={images} />} />
+          <Route
+            exact
+            path='/*'
+            component={() => <Photos images={images} statement={statement} />}
+          />
         </Switch>
       </div>
     </Router>
